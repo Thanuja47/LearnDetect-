@@ -1,0 +1,203 @@
+{
+  "version": 3,
+  "pages404": true,
+  "caseSensitive": false,
+  "basePath": "",
+  "redirects": [
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "internal": true,
+      "priority": true,
+      "statusCode": 308,
+      "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"
+    }
+  ],
+  "headers": [],
+  "rewrites": {
+    "beforeFiles": [],
+    "afterFiles": [],
+    "fallback": []
+  },
+  "dynamicRoutes": [
+    {
+      "page": "/doctors/[id]",
+      "regex": "^/doctors/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/doctors/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/parent-dashboard/children/[id]",
+      "regex": "^/parent\\-dashboard/children/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/parent\\-dashboard/children/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/parent-dashboard/reports/[reportId]",
+      "regex": "^/parent\\-dashboard/reports/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPreportId": "nxtPreportId"
+      },
+      "namedRegex": "^/parent\\-dashboard/reports/(?<nxtPreportId>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/teacher-dashboard/students/[id]",
+      "regex": "^/teacher\\-dashboard/students/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/teacher\\-dashboard/students/(?<nxtPid>[^/]+?)(?:/)?$"
+    }
+  ],
+  "staticRoutes": [
+    {
+      "page": "/",
+      "regex": "^/(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/(?:/)?$"
+    },
+    {
+      "page": "/_global-error",
+      "regex": "^/_global\\-error(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_global\\-error(?:/)?$"
+    },
+    {
+      "page": "/_not-found",
+      "regex": "^/_not\\-found(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/admin-dashboard",
+      "regex": "^/admin\\-dashboard(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin\\-dashboard(?:/)?$"
+    },
+    {
+      "page": "/admin-dashboard/doctors",
+      "regex": "^/admin\\-dashboard/doctors(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin\\-dashboard/doctors(?:/)?$"
+    },
+    {
+      "page": "/admin-dashboard/settings",
+      "regex": "^/admin\\-dashboard/settings(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin\\-dashboard/settings(?:/)?$"
+    },
+    {
+      "page": "/admin-dashboard/users",
+      "regex": "^/admin\\-dashboard/users(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin\\-dashboard/users(?:/)?$"
+    },
+    {
+      "page": "/doctors",
+      "regex": "^/doctors(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/doctors(?:/)?$"
+    },
+    {
+      "page": "/login",
+      "regex": "^/login(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/login(?:/)?$"
+    },
+    {
+      "page": "/parent-dashboard",
+      "regex": "^/parent\\-dashboard(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/parent\\-dashboard(?:/)?$"
+    },
+    {
+      "page": "/parent-dashboard/children",
+      "regex": "^/parent\\-dashboard/children(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/parent\\-dashboard/children(?:/)?$"
+    },
+    {
+      "page": "/parent-dashboard/children/add",
+      "regex": "^/parent\\-dashboard/children/add(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/parent\\-dashboard/children/add(?:/)?$"
+    },
+    {
+      "page": "/parent-dashboard/progress",
+      "regex": "^/parent\\-dashboard/progress(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/parent\\-dashboard/progress(?:/)?$"
+    },
+    {
+      "page": "/parent-dashboard/reports",
+      "regex": "^/parent\\-dashboard/reports(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/parent\\-dashboard/reports(?:/)?$"
+    },
+    {
+      "page": "/parent-dashboard/settings",
+      "regex": "^/parent\\-dashboard/settings(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/parent\\-dashboard/settings(?:/)?$"
+    },
+    {
+      "page": "/signup",
+      "regex": "^/signup(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/signup(?:/)?$"
+    },
+    {
+      "page": "/student-dashboard",
+      "regex": "^/student\\-dashboard(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/student\\-dashboard(?:/)?$"
+    },
+    {
+      "page": "/teacher-dashboard",
+      "regex": "^/teacher\\-dashboard(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/teacher\\-dashboard(?:/)?$"
+    },
+    {
+      "page": "/teacher-dashboard/analytics",
+      "regex": "^/teacher\\-dashboard/analytics(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/teacher\\-dashboard/analytics(?:/)?$"
+    },
+    {
+      "page": "/teacher-dashboard/schedule",
+      "regex": "^/teacher\\-dashboard/schedule(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/teacher\\-dashboard/schedule(?:/)?$"
+    },
+    {
+      "page": "/teacher-dashboard/students",
+      "regex": "^/teacher\\-dashboard/students(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/teacher\\-dashboard/students(?:/)?$"
+    }
+  ],
+  "dataRoutes": [],
+  "rsc": {
+    "header": "rsc",
+    "varyHeader": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+    "prefetchHeader": "next-router-prefetch",
+    "didPostponeHeader": "x-nextjs-postponed",
+    "contentTypeHeader": "text/x-component",
+    "suffix": ".rsc",
+    "prefetchSuffix": ".prefetch.rsc",
+    "prefetchSegmentHeader": "next-router-segment-prefetch",
+    "prefetchSegmentSuffix": ".segment.rsc",
+    "prefetchSegmentDirSuffix": ".segments",
+    "clientParamParsing": false,
+    "dynamicRSCPrerender": false
+  },
+  "rewriteHeaders": {
+    "pathHeader": "x-nextjs-rewritten-path",
+    "queryHeader": "x-nextjs-rewritten-query"
+  }
+}

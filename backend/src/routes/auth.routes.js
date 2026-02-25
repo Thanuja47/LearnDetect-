@@ -1,0 +1,29 @@
+const express = require('express');
+const { body } = require('express-validator');
+const validate = require('../middleware/validate.middleware');
+const { auth } = require('../middleware/auth.middleware');
+const authController = require('../controllers/auth.controller');
+
+const router = express.Router();
+
+// Register validation
+const registerValidation = [
+  body('email').isEmail().withMessage('Please provide a valid email'),
+  body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
+  body('name').notEmpty().withMessage('Name is required'),
+  body('role').isIn(['student', 'parent', 'teacher', 'admin']).withMessage('Invalid role')
+];
+
+// Login validation
+const loginValidation = [
+  body('email').isEmail().withMessage('Please provide a valid email'),
+  body('password').notEmpty().withMessage('Password is required')
+];
+
+// Routes
+router.post('/register', registerValidation, validate, authController.register);
+router.post('/login', loginValidation, validate, authController.login);
+router.get('/me', auth, authController.getMe);
+router.put('/change-password', auth, authController.changePassword);
+
+module.exports = router;

@@ -1,0 +1,331 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// User roles enum
+enum Role {
+  STUDENT
+  PARENT
+  TEACHER
+  ADMIN
+}
+
+// Assessment types enum
+enum AssessmentType {
+  PHONEME
+  WORD
+  PASSAGE
+  COMPREHENSION
+}
+
+// Status for children/students
+enum Status {
+  EXCELLENT
+  ON_TRACK
+  NEEDS_SUPPORT
+}
+
+// User model - base for all user types
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  password  String
+  name      String
+  role      Role
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  student  Student?
+  parent   Parent?
+  teacher  Teacher?
+
+  @@map("users")
+}
+
+// Student model
+model Student {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId          String   @unique @db.ObjectId
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  age             Int?
+  grade           String?
+  streak          Int      @default(0)
+  totalTests      Int      @default(0)
+  averageScore    Float    @default(0)
+  status          Status   @default(ON_TRACK)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  assessments     Assessment[]
+  achievements    Achievement[]
+  progressRecords Progress[]
+
+  @@map("students")
+}
+
+// Parent model
+model Parent {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @unique @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  children  Child[]
+
+  @@map("parents")
+}
+
+// Child model (for parent's children)
+model Child {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  parentId        String   @db.ObjectId
+  parent          Parent   @relation(fields: [parentId], references: [id], onDelete: Cascade)
+  firstName       String
+  lastName        String
+  dateOfBirth     DateTime
+  grade           String
+  gender          String
+  progress        Float    @default(0)
+  testsCompleted  Int      @default(0)
+  averageScore    Float    @default(0)
+  status          Status   @default(ON_TRACK)
+  lastAssessment  DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  assessments     ChildAssessment[]
+  reports         Report[]
+
+  @@map("children")
+}
+
+// Teacher model
+model Teacher {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String   @unique @db.ObjectId
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subject       String?
+  className     String?
+  totalStudents Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  schedules     Schedule[]
+  classStudents ClassStudent[]
+
+  @@map("teachers")
+}
+
+// Assessment model (for students)
+model Assessment {
+  id              String         @id @default(auto()) @map("_id") @db.ObjectId
+  studentId       String         @db.ObjectId
+  student         Student        @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  type            AssessmentType
+  wordAccuracy    Float
+  pronunciation   Float
+  readingSpeed    Float
+  fluency         Float
+  comprehension   Float
+  overallScore    Float
+  recognizedText  String?
+  feedback        String[]
+  suggestions     String[]
+  createdAt       DateTime       @default(now())
+
+  @@map("assessments")
+}
+
+// Child Assessment model (for parent's children)
+model ChildAssessment {
+  id              String         @id @default(auto()) @map("_id") @db.ObjectId
+  childId         String         @db.ObjectId
+  child           Child          @relation(fields: [childId], references: [id], onDelete: Cascade)
+  type            AssessmentType
+  wordAccuracy    Float
+  pronunciation   Float
+  readingSpeed    Float
+  fluency         Float
+  comprehension   Float
+  overallScore    Float
+  recognizedText  String?
+  feedback        String[]
+  suggestions     String[]
+  createdAt       DateTime       @default(now())
+
+  @@map("child_assessments")
+}
+
+// Progress tracking model
+model Progress {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  studentId String   @db.ObjectId
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  date      DateTime @default(now())
+  score     Float
+  skill     String   // pronunciation, fluency, wordRecognition, readingSpeed
+
+  @@map("progress")
+}
+
+// Achievement/Badge model
+model Achievement {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  studentId   String   @db.ObjectId
+  student     Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  name        String
+  description String
+  icon        String
+  earnedAt    DateTime @default(now())
+
+  @@map("achievements")
+}
+
+// Schedule model (for teachers)
+model Schedule {
+  id        String         @id @default(auto()) @map("_id") @db.ObjectId
+  teacherId String         @db.ObjectId
+  teacher   Teacher        @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  date      DateTime
+  time      String
+  duration  Int
+  type      AssessmentType
+  notes     String?
+  studentIds String[]      @db.ObjectId
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@map("schedules")
+}
+
+// Class Student relation (teacher's students)
+model ClassStudent {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  teacherId String   @db.ObjectId
+  teacher   Teacher  @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  name      String
+  studentCode String   @unique
+  score     Float    @default(0)
+  status    Status   @default(ON_TRACK)
+  trend     Int      @default(0)
+  lastAssessment DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("class_students")
+}
+
+// Report model
+model Report {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  childId   String   @db.ObjectId
+  child     Child    @relation(fields: [childId], references: [id], onDelete: Cascade)
+  title     String
+  type      String   // Summary, Detailed, Quarterly
+  content   String?
+  createdAt DateTime @default(now())
+
+  @@map("reports")
+}
+
+// Admin Stats model (for caching dashboard stats)
+model AdminStats {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  totalUsers      Int      @default(0)
+  totalAssessments Int     @default(0)
+  storageUsed     Float    @default(0)
+  date            DateTime @default(now())
+
+  @@map("admin_stats")
+}
+
+// Assessment Material model (reading content for assessments)
+model AssessmentMaterial {
+  id          String         @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  type        AssessmentType
+  content     String
+  difficulty  String         @default("medium") // easy, medium, hard
+  grade       String?        // Target grade level
+  duration    Int            @default(5) // Estimated duration in minutes
+  isActive    Boolean        @default(true)
+  createdBy   String?        @db.ObjectId
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@map("assessment_materials")
+}
+
+// Doctor model
+model Doctor {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  specialty       String
+  qualifications  String[]
+  experience      Int      // years of experience
+  price           Float    // consultation fee
+  phone           String
+  email           String   @unique
+  address         String?
+  availability    Json?    // Store as JSON array
+  rating          Float    @default(0)
+  reviewCount     Int      @default(0)
+  bio             String
+  image           String?
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  reviews         DoctorReview[]
+  appointments    Appointment[]
+
+  @@map("doctors")
+}
+
+// Doctor Review model
+model DoctorReview {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  doctorId  String   @db.ObjectId
+  doctor    Doctor   @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  userId    String   @db.ObjectId
+  userName  String
+  rating    Float    // 1-5 stars
+  comment   String
+  createdAt DateTime @default(now())
+
+  @@map("doctor_reviews")
+}
+
+// Appointment model
+model Appointment {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  doctorId        String   @db.ObjectId
+  doctor          Doctor   @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  userId          String?  @db.ObjectId
+  patientName     String
+  patientEmail    String
+  patientPhone    String
+  appointmentDate DateTime
+  appointmentTime String
+  status          String   @default("pending") // pending, confirmed, cancelled, completed
+  notes           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("appointments")
+}
